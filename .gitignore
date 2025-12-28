@@ -1,0 +1,6 @@
+#my ignores
+
+*.blend
+*.blend1
+
+DR_backup/
