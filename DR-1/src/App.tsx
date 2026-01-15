@@ -206,7 +206,7 @@ export function FlagModel({}: FlagModelProps) {
   return (
     <group
       ref={group}
-      position={[-10.5, -0.1, 0]}
+      position={[-0.5, -0.1, 0]}
       scale={[0.6, 0.6, 0.3]}
       rotation={[Math.PI / 48, 0, 0]}
     >
@@ -480,12 +480,18 @@ export default function App() {
   const flagDetachRef = useRef<(() => void) | null>(null);
 
   return (
-    <div className="app-root">
+      <>
       {/* <MainNav /> */}
 
       <Canvas
+      
         orthographic
-        camera={{ zoom: 50, position: [0, 1, 10], near: 0.1, far: 1000 }}
+        camera={{
+          zoom: 50,
+          position: [0, 1.4, 10], // ⬅️ raise camera Y
+          near: 0.1,
+          far: 1000,
+        }}
       >
         <OrbitControls />
 
@@ -525,6 +531,6 @@ export default function App() {
           flagDetachRef={flagDetachRef}
         />
       </Canvas>
-    </div>
+    </>
   );
 }

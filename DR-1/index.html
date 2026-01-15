@@ -1,20 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dr-1</title>
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Rhino 3D Logo Demo</title>
+
+  <!-- Bootstrap CSS (no install required) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Your custom styles -->
+  <link rel="stylesheet" href="./src/DR-1_styles_2.css">
+</head>
+
+<body>
+
+  <!-- Top Banner -->
+  <div id="top-banner" class="top-banner">
     
-  </head>
-  <body>
-   
+    <div class="left-inner-top-banner">
+      <!-- React Three Fiber mount -->
+      <div id="r3f-root"></div>
+      <img src="./src/images/DR_logo_2.png">
 
-    <div id="r3f-root">
 
-     
     </div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <nav role="navigation"
+      class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-underline e--animation-fade">
+
+      <ul class="elementor-nav-menu">
+        <li class="menu-item current-menu-item">
+          <a href="#" class="elementor-item elementor-item-active">Home</a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="elementor-item">Our Process</a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="elementor-item">Our Niche</a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="elementor-item">About Us</a>
+        </li>
+        <li class="menu-item">
+          <a href="#" class="elementor-item">Contact</a>
+        </li>
+
+        <li class="menu-item menu-item-has-children">
+          <a class="elementor-item has-submenu">
+            Services <span class="sub-arrow">▾</span>
+          </a>
+          <ul class="sub-menu elementor-nav-menu--dropdown">
+            <li><a href="#" class="elementor-sub-item">Google Ads</a></li>
+            <li><a href="#" class="elementor-sub-item">Facebook</a></li>
+            <li><a href="#" class="elementor-sub-item">LinkedIn Ads</a></li>
+            <li><a href="#" class="elementor-sub-item">Landing Pages</a></li>
+            <li><a href="#" class="elementor-sub-item">SEO</a></li>
+            <li><a href="#" class="elementor-sub-item">Marketing Automation</a></li>
+            <li><a href="#" class="elementor-sub-item">CRO</a></li>
+            <li><a href="#" class="elementor-sub-item">Email Marketing</a></li>
+            <li><a href="#" class="elementor-sub-item">Content Marketing</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="right-inner-top-banner"><img src="./src/images/Orange_SaaS_logo_1.png"></div>
+  </div>
+
+
+
+
+
+  <div id="Main-content">
+    
+    <div class="centered-text">
+      <p>B2B SaaS Growth Agency</p>
+      <h1 id="focus_H1">Focus on actual growth,<br> not just vanity metrics.</h1><br>
+      <p>Build a scalable digital marketing growth engine for your SaaS or tech business
+        to attract qualified opportunities and smash your MRR targets.</p>
+      <button>Book a Discovery Call</button>
+    </div>
+  </div>
+
+  <div class="demo-warning">
+    Demo site only – non-functioning links
+  </div>
+<script type="module" src="/src/main.tsx"></script>
+  <!-- <script type="module" src="./DR-1/dist/assets/index.js"></script> -->
+</body>
+
 </html>
