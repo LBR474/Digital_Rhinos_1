@@ -1,18 +1,49 @@
+# ==================================================
+# Logs
+# ==================================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
+# ==================================================
+# Node modules / builds / local files
+# ==================================================
+node_modules
+dist-ssr
+*.local
 
-#my ignores
+# ==================================================
+# Editor directories and files
+# ==================================================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==================================================
+# Project-specific ignores
+# ==================================================
+# Backups
 src/DR-1_backup/
 
+# Blender files
 *.blend
 *.blend1
 *.blend2
 
-
-
+# Fonts
 fonts/Raleway/static/
 fonts/Roboto/static/
 fonts/Lato/
-
 DR-1/src/fonts/Lato/
 DR-1/src/fonts/Roboto/static/
 DR-1/src/fonts/Raleway/static/
