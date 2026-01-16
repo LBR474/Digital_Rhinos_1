@@ -37,26 +37,6 @@ function RhinoModel() {
    if (!rhinoRef.current) return;
    const rhino = rhinoRef.current;
 
-   const screenSize = getScreenSize();
-
-   let targetX = -3;
-
-   if (screenSize === "desktop") {
-     targetX = -3;
-   }
-  //  } 
-  //  else if (screenSize === "laptop") {
-  //    targetX = -1;
-  //  } 
-  //  else if (screenSize === "tablet") {
-  //    targetX = -1;
-  //  } 
-   else {
-     // mobile
-     targetX = 0;
-   }
-
-
    /* -------------------------------------------------- */
    /* COLLECT BONES                                      */
    /* -------------------------------------------------- */
@@ -141,11 +121,39 @@ function RhinoModel() {
      });
 
    /* -------------------------------------------------- */
+   /* SCREEN SIZE & WALK TARGET                           */
+   /* -------------------------------------------------- */
+   const screenWidth = window.innerWidth;
+   const screenHeight = window.innerHeight;
+
+   const shortScreen = screenHeight < 700;
+   const midScreen = screenWidth >= 380 && screenWidth < 770;
+   const screenSize = getScreenSize();
+   const isMobile = screenSize === "mobile";
+
+   // Rhino scale
+   let scale = 0.3; // default desktop
+
+   if (midScreen) {
+     scale = 0.25; // mid screen override
+   } else if (shortScreen || isMobile) {
+     scale = 0.18; // short or very small mobile screens
+   }
+
+   // Rhino Y position
+   const posY = shortScreen ? -0.7 : -0.9;
+
+   // Walk target X
+   let targetX = -1; // desktop
+   if (midScreen) targetX = 0.5;
+   else if (isMobile) targetX = -1;
+
+   /* -------------------------------------------------- */
    /* BODY SETUP                                         */
    /* -------------------------------------------------- */
-   rhino.position.set(-15, -0.9, -3);
-   rhino.scale.set(0.3, 0.3, 0.3);
+   rhino.position.set(-15, posY, -3);
    rhino.rotation.set(0, Math.PI, 0);
+   rhino.scale.set(scale, scale, scale);
 
    /* -------------------------------------------------- */
    /* BODY TIMELINE (INITIAL WALK-IN)                    */
@@ -197,6 +205,7 @@ function RhinoModel() {
      bodyTl.current?.kill();
    };
  }, [gltf]);
+
 
 
 
