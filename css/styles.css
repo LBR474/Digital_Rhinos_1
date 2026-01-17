@@ -1,5 +1,6 @@
 :root {
-  --top-banner-height: 8vh;
+  --top-banner-height: 84px;
+  --logo-height: calc(var(--top-banner-height) * 0.6);
 }
 
 /* ================================================== */
@@ -44,6 +45,11 @@ body {
 /* ================================================== */
 
 #top-banner {
+
+  
+
+ 
+
   position: fixed;
   top: 0;
   left: 0;
@@ -102,8 +108,13 @@ body {
 .left-inner-top-banner img {
   position: relative;
   z-index: 2;
-  height: calc(100% - 30px);
+  height: var(--logo-height);
+  max-height: var(--logo-height);
+  min-height: var(--logo-height);
+
   width: auto;
+  flex-shrink: 0;
+
   display: block;
 }
 
@@ -295,10 +306,7 @@ body {
 
 @media (max-width: 1439px) {
 
-  :root {
-    --top-banner-height: 74px; /* taller to give breathing room */
-  }
-
+  
   .right-inner-top-banner {
     display: none;
   }
@@ -311,9 +319,9 @@ body {
     overflow: hidden;
   }
   .left-inner-top-banner img {
-    height: auto;
-    min-height: 60%;
-    min-width: 60vw;
+    height: var(--logo-height);
+    max-height: var(--logo-height);
+    min-height: var(--logo-height);
   }
   .elementor-nav-menu__container {
     padding-right: 24px;
@@ -323,10 +331,7 @@ body {
 
 @media (max-width: 770px) {
 
-  :root {
-    --top-banner-height: 54px; /* taller to give breathing room */
-  }
-
+  
 
   .left-inner-top-banner {
     position: relative;
@@ -337,9 +342,7 @@ body {
   }
 
   .left-inner-top-banner img {
-    height: auto;
-    max-height: 60%;
-    /* max-width: 70vw; */
+    height: var(--logo-height)
     
   }
 
