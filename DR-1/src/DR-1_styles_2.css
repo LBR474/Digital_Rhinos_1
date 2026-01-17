@@ -1,5 +1,5 @@
 :root {
-  --top-banner-height: 84px;
+  --top-banner-height: 74px;
   --logo-height: calc(var(--top-banner-height) * 0.6);
 }
 
@@ -200,14 +200,18 @@ body {
   left: 50%;
   transform: translateX(-50%) rotate(-20deg);
 
-  width: 80%;
-  padding: 12px 24px;
+  width: min(80%, 900px);
+
+  padding:
+    clamp(8px, 1.2vh, 16px)
+    clamp(16px, 3vw, 32px);
 
   background: rgba(255, 0, 0, 0.7);
   color: #fff;
 
-  font-size: 24px;
-  font-weight: bold;
+  font-size: clamp(14px, calc(1.2vw + 1.2vh), 26px);
+  line-height: 1.25;
+  font-weight: 700;
   text-align: center;
 
   z-index: 9999;
@@ -218,36 +222,155 @@ body {
   align-items: center;
 }
 
+
 /* ================================================== */
 /* Main content (below top banner)                    */
+/* ================================================== */
+
+/* ================================================== */
+/* Main content (fluid, height-aware)                 */
+/* ================================================== */
+
+/* ================================================== */
+/* Main content (fully fluid down to ~380px height)   */
+/* ================================================== */
+
+/* ================================================== */
+/* Main content (below top banner, fully fluid)     */
 /* ================================================== */
 
 #Main-content {
   position: relative;
   width: 100%;
-  margin-top: 5px;
-  min-height: calc(100svh - var(--top-banner-height));
-  z-index: 0;
-  overflow-y: auto;
-  background-color: #e4e4e4;
 
+  /* Position below fixed header */
+  margin-top: var(--top-banner-height);
+  height: calc(100dvh - var(--top-banner-height));
+
+  /* Scrolling for overflow */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  /* Flex layout centered */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
 
-  padding: 20px;
+  /* Height- and width-aware padding */
+  padding:
+    clamp(12px, 3vh, 36px)
+    clamp(16px, 4vw, 40px);
+
+  background-color: #e4e4e4;
+  z-index: 0;
+
   font-family: "Roboto", system-ui, sans-serif;
 }
 
-.centered-text {
-  width: fit-content;
-  max-width: 700px;
+/* Inner wrapper for text and button, scaling vertically */
+#Main-content .content-wrapper {
+  width: min(92%, 700px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  /* Vertical spacing scales with viewport height */
+  gap: clamp(0.5rem, 2vh, 2rem);
 }
+
+/* ---------- H1 ---------- */
+#Main-content h1 {
+  font-size: clamp(
+    20px,             /* min for ultra-short screens */
+    calc(2vw + 4vh),  /* fluid scaling: width + height */
+    64px              /* max */
+  );
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #111;
+  text-align: center;
+}
+
+/* ---------- Paragraph ---------- */
+#Main-content p {
+  font-size: clamp(
+    12px,
+    calc(0.8vw + 1.5vh),
+    18px
+  );
+  line-height: 1.55;
+  margin-bottom: clamp(1rem, 2vh, 2rem);
+  color: #333;
+  max-width: 700px;
+  text-align: center;
+}
+
+/* ---------- Button ---------- */
+#Main-content button {
+  font-size: clamp(
+    12px,
+    calc(0.8vw + 1.2vh),
+    18px
+  );
+  padding: clamp(8px, 1.5vh, 12px)
+           clamp(16px, 3vw, 24px);
+  background-color: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+#Main-content button:hover {
+  background-color: #e65500;
+}
+
+/* ---------- Very short screens (down to 380px height) ---------- */
+@media (max-height: 420px) {
+  #Main-content .content-wrapper {
+    gap: clamp(0.25rem, 1.5vh, 1.5rem);
+  }
+
+  #Main-content h1 {
+    font-size: clamp(18px, 2vh + 2vw, 32px);
+  }
+
+  #Main-content p {
+    font-size: clamp(10px, 1.5vh + 1vw, 16px);
+    margin-bottom: clamp(0.5rem, 1vh, 1.5rem);
+  }
+
+  #Main-content button {
+    font-size: clamp(10px, 1.5vh + 1vw, 14px);
+    padding: clamp(6px, 1vh, 10px)
+             clamp(12px, 2vw, 20px);
+  }
+}
+
+/* centered-text stays mostly the same */
+.centered-text {
+  width: min(92%, 700px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: clamp(0.5rem, 2vh, 1.75rem);
+}
+
+/* Safety net for very short screens */
+@media (max-height: 420px) {
+  #Main-content {
+    justify-content: flex-start; /* compress to top */
+    padding-top: clamp(10px, 1.5vh, 24px);
+    padding-bottom: clamp(10px, 1.5vh, 24px);
+  }
+}
+
+
 
 /* ---------- Inner text ---------- */
 
