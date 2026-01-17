@@ -33,178 +33,189 @@ function RhinoModel() {
   }
 
 
- useEffect(() => {
-   if (!rhinoRef.current) return;
-   const rhino = rhinoRef.current;
+useEffect(() => {
+  if (!rhinoRef.current) return;
+  const rhino = rhinoRef.current;
 
-   /* -------------------------------------------------- */
-   /* COLLECT BONES                                      */
-   /* -------------------------------------------------- */
-   const foundBones: Record<string, Bone> = {};
-   gltf.scene.traverse((obj) => {
-     if (obj instanceof Bone) foundBones[obj.name] = obj;
-   });
-   bones.current = foundBones;
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
 
-   const frontLeg1L = bones.current["Front_leg_1_L"];
-   const backLeg1L = bones.current["Back_leg_1_L"];
-   const frontLeg1R = bones.current["Front_leg_1_R"];
-   const backLeg1R = bones.current["Back_leg_1_R"];
-   const neckBone = bones.current["Neck_mover_bone"];
+  const screenSize = getScreenSize();
+  const isMobile = screenSize === "mobile";
 
-   if (!frontLeg1L || !backLeg1L || !frontLeg1R || !backLeg1R) {
-     console.warn("🦏 Missing leg bones");
-     return;
-   }
+  const shortScreen = screenHeight < 700;
+  
+  
+  const midScreen = screenWidth >= 380 && screenWidth < 770;
+  const tinyScreen = screenWidth <= 547 && screenHeight <= 380;
+  
+  // ----------------------
+  // Determine Rhino targetX
+  // ----------------------
+  let targetX = -1; // default desktop
+  if (tinyScreen) targetX = 0.5; // tiny screen: move slightly right
+  else if (midScreen) targetX = 1; // mid screens
+  else if (isMobile) targetX = 1; // generic mobile fallback
 
-   /* -------------------------------------------------- */
-   /* LEG QUATERNIONS                                    */
-   /* -------------------------------------------------- */
-   const forwardFrontL = new Quaternion(0.2105, -0.749, 0.3166, 0.5424);
-   const backwardFrontL = new Quaternion(0.4372, -0.5181, 0.6267, 0.3839);
-   const forwardBackL = new Quaternion(0.2923, -0.7221, 0.4124, 0.4721);
-   const backwardBackL = new Quaternion(0.4645, -0.4801, 0.679, 0.3043);
+  // ----------------------
+  // Determine Rhino scale
+  // ----------------------
+  let scale = 0.3; // default desktop
+  if (tinyScreen) scale = 0.15; // tiny portrait
+  else if (midScreen) scale = 0.18; // mid screens (380–770 width)
+  else if (shortScreen) scale = 0.18; // short screens (<700 height)
+  else if (isMobile) scale = 0.18; // fallback for mobile <770px
 
-   const forwardFrontR = new Quaternion(0.3166, -0.5478, 0.2093, 0.7455);
-   const backwardFrontR = new Quaternion(0.6251, -0.3892, 0.4386, 0.5151);
-   const forwardBackR = new Quaternion(0.4884, -0.5147, 0.291, 0.6416);
-   const backwardBackR = new Quaternion(0.6968, -0.3641, 0.4658, 0.4058);
+  // ----------------------
+  // Determine Rhino Y position
+  // ----------------------
+  let posY = -0.9; // default desktop
+  if (tinyScreen) posY = -0.6;
+  else if (shortScreen) posY = -0.7;
 
-   const step = { t: 0 };
-   const neckLookQuat = new Quaternion(-0.3826, -0.0012, 0.0031, 0.9238);
+  // -----------------------------------------
+  // Rhino vertical position
+  // -----------------------------------------
 
-   /* -------------------------------------------------- */
-   /* LEG WALK TIMELINE                                  */
-   /* -------------------------------------------------- */
-   legTl.current = gsap.timeline({ repeat: -1, paused: true });
+  if (shortScreen) posY = -0.7;
+  if (tinyScreen) posY = -0.6; // lift slightly for tiny screens
 
-   legTl.current
-     .to(step, {
-       t: 1,
-       duration: 0.4,
-       ease: "sine.inOut",
-       onUpdate: () => {
-         const t = step.t;
-         frontLeg1L.quaternion.slerpQuaternions(
-           backwardFrontL,
-           forwardFrontL,
-           t
-         );
-         backLeg1L.quaternion.slerpQuaternions(forwardBackL, backwardBackL, t);
-         frontLeg1R.quaternion.slerpQuaternions(
-           forwardFrontR,
-           backwardFrontR,
-           t
-         );
-         backLeg1R.quaternion.slerpQuaternions(backwardBackR, forwardBackR, t);
-       },
-     })
-     .to(step, {
-       t: 0,
-       duration: 0.4,
-       ease: "sine.inOut",
-       onUpdate: () => {
-         const t = step.t;
-         frontLeg1L.quaternion.slerpQuaternions(
-           forwardFrontL,
-           backwardFrontL,
-           t
-         );
-         backLeg1L.quaternion.slerpQuaternions(backwardBackL, forwardBackL, t);
-         frontLeg1R.quaternion.slerpQuaternions(
-           backwardFrontR,
-           forwardFrontR,
-           t
-         );
-         backLeg1R.quaternion.slerpQuaternions(forwardBackR, backwardBackR, t);
-       },
-     });
+  rhino.position.set(-15, posY, -3);
+  rhino.rotation.set(0, Math.PI, 0);
+  rhino.scale.set(scale, scale, scale);
 
-   /* -------------------------------------------------- */
-   /* SCREEN SIZE & WALK TARGET                           */
-   /* -------------------------------------------------- */
-   const screenWidth = window.innerWidth;
-   const screenHeight = window.innerHeight;
+  // -----------------------------------------
+  // Collect Bones
+  // -----------------------------------------
+  const foundBones: Record<string, Bone> = {};
+  gltf.scene.traverse((obj) => {
+    if (obj instanceof Bone) foundBones[obj.name] = obj;
+  });
+  bones.current = foundBones;
 
-   const shortScreen = screenHeight < 700;
-   const midScreen = screenWidth >= 380 && screenWidth < 770;
-   const screenSize = getScreenSize();
-   const isMobile = screenSize === "mobile";
+  const frontLeg1L = bones.current["Front_leg_1_L"];
+  const backLeg1L = bones.current["Back_leg_1_L"];
+  const frontLeg1R = bones.current["Front_leg_1_R"];
+  const backLeg1R = bones.current["Back_leg_1_R"];
+  const neckBone = bones.current["Neck_mover_bone"];
 
-   // Rhino scale
-   let scale = 0.3; // default desktop
+  if (!frontLeg1L || !backLeg1L || !frontLeg1R || !backLeg1R) {
+    console.warn("🦏 Missing leg bones");
+    return;
+  }
 
-   if (midScreen) {
-     scale = 0.25; // mid screen override
-   } else if (shortScreen || isMobile) {
-     scale = 0.18; // short or very small mobile screens
-   }
+  // -----------------------------------------
+  // Leg Quaternions
+  // -----------------------------------------
+  const forwardFrontL = new Quaternion(0.2105, -0.749, 0.3166, 0.5424);
+  const backwardFrontL = new Quaternion(0.4372, -0.5181, 0.6267, 0.3839);
+  const forwardBackL = new Quaternion(0.2923, -0.7221, 0.4124, 0.4721);
+  const backwardBackL = new Quaternion(0.4645, -0.4801, 0.679, 0.3043);
 
-   // Rhino Y position
-   const posY = shortScreen ? -0.7 : -0.9;
+  const forwardFrontR = new Quaternion(0.3166, -0.5478, 0.2093, 0.7455);
+  const backwardFrontR = new Quaternion(0.6251, -0.3892, 0.4386, 0.5151);
+  const forwardBackR = new Quaternion(0.4884, -0.5147, 0.291, 0.6416);
+  const backwardBackR = new Quaternion(0.6968, -0.3641, 0.4658, 0.4058);
 
-   // Walk target X
-   let targetX = -1; // desktop
-   if (midScreen) targetX = 0.5;
-   else if (isMobile) targetX = -1;
+  const step = { t: 0 };
+  const neckLookQuat = new Quaternion(-0.3826, -0.0012, 0.0031, 0.9238);
 
-   /* -------------------------------------------------- */
-   /* BODY SETUP                                         */
-   /* -------------------------------------------------- */
-   rhino.position.set(-15, posY, -3);
-   rhino.rotation.set(0, Math.PI, 0);
-   rhino.scale.set(scale, scale, scale);
+  // -----------------------------------------
+  // Leg Walk Timeline
+  // -----------------------------------------
+  legTl.current = gsap.timeline({ repeat: -1, paused: true });
 
-   /* -------------------------------------------------- */
-   /* BODY TIMELINE (INITIAL WALK-IN)                    */
-   /* -------------------------------------------------- */
-   bodyTl.current = gsap.timeline({ delay: 0.6 });
+  legTl.current
+    .to(step, {
+      t: 1,
+      duration: 0.4,
+      ease: "sine.inOut",
+      onUpdate: () => {
+        const t = step.t;
+        frontLeg1L.quaternion.slerpQuaternions(
+          backwardFrontL,
+          forwardFrontL,
+          t
+        );
+        backLeg1L.quaternion.slerpQuaternions(forwardBackL, backwardBackL, t);
+        frontLeg1R.quaternion.slerpQuaternions(
+          forwardFrontR,
+          backwardFrontR,
+          t
+        );
+        backLeg1R.quaternion.slerpQuaternions(backwardBackR, forwardBackR, t);
+      },
+    })
+    .to(step, {
+      t: 0,
+      duration: 0.4,
+      ease: "sine.inOut",
+      onUpdate: () => {
+        const t = step.t;
+        frontLeg1L.quaternion.slerpQuaternions(
+          forwardFrontL,
+          backwardFrontL,
+          t
+        );
+        backLeg1L.quaternion.slerpQuaternions(backwardBackL, forwardBackL, t);
+        frontLeg1R.quaternion.slerpQuaternions(
+          backwardFrontR,
+          forwardFrontR,
+          t
+        );
+        backLeg1R.quaternion.slerpQuaternions(forwardBackR, backwardBackR, t);
+      },
+    });
 
-   bodyTl.current.call(() => {
-     legTl.current?.play();
-   });
+  // -----------------------------------------
+  // Body Timeline (Initial Walk-In)
+  // -----------------------------------------
+  bodyTl.current = gsap.timeline({ delay: 0.6 });
 
-   bodyTl.current.to(rhino.position, {
-     x: targetX,
-     duration: 4,
-     ease: "power1.inOut",
-   });
+  bodyTl.current.call(() => {
+    legTl.current?.play();
+  });
 
-   bodyTl.current.call(() => {
-     legTl.current?.pause();
-   });
+  bodyTl.current.to(rhino.position, {
+    x: targetX,
+    duration: 4,
+    ease: "power1.inOut",
+  });
 
-   /* -------------------------------------------------- */
-   /* NECK TURN TO CAMERA                                */
-   /* -------------------------------------------------- */
-   bodyTl.current.call(() => {
-     if (!neckBone) return;
+  bodyTl.current.call(() => {
+    legTl.current?.pause();
+  });
 
-     const startQuat = neckBone.quaternion.clone();
-     const neckStep = { t: 0 };
+  // -----------------------------------------
+  // Neck Turn to Camera
+  // -----------------------------------------
+  bodyTl.current.call(() => {
+    if (!neckBone) return;
+    const startQuat = neckBone.quaternion.clone();
+    const neckStep = { t: 0 };
 
-     gsap.to(neckStep, {
-       t: 1,
-       duration: 1.4,
-       ease: "power2.out",
-       onUpdate: () => {
-         neckBone.quaternion.slerpQuaternions(
-           startQuat,
-           neckLookQuat,
-           neckStep.t
-         );
-       },
-     });
-   });
+    gsap.to(neckStep, {
+      t: 1,
+      duration: 1.4,
+      ease: "power2.out",
+      onUpdate: () => {
+        neckBone.quaternion.slerpQuaternions(
+          startQuat,
+          neckLookQuat,
+          neckStep.t
+        );
+      },
+    });
+  });
 
-   /* -------------------------------------------------- */
-   /* CLEANUP                                           */
-   /* -------------------------------------------------- */
-   return () => {
-     legTl.current?.kill();
-     bodyTl.current?.kill();
-   };
- }, [gltf]);
+  // -----------------------------------------
+  // Cleanup
+  // -----------------------------------------
+  return () => {
+    legTl.current?.kill();
+    bodyTl.current?.kill();
+  };
+}, [gltf]);
 
 
 
