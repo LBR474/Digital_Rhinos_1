@@ -62,7 +62,7 @@ useEffect(() => {
   // ----------------------
   let scale = 0.3; // default desktop
   if (tinyScreen) scale = 0.15; // tiny portrait
-  else if (midScreen) scale = 0.18; // mid screens (380–770 width)
+  else if (midScreen) scale = 0.22; // mid screens (380–770 width)
   else if (shortScreen) scale = 0.18; // short screens (<700 height)
   else if (isMobile) scale = 0.18; // fallback for mobile <770px
 
