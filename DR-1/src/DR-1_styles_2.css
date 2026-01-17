@@ -525,6 +525,11 @@ body {
   :root {
     --top-banner-height: 54px; /* taller to give breathing room */
   }
+  .left-inner-top-banner img {
+    height: var(--logo-height);
+  max-height: var(--logo-height);
+  min-height: var(--logo-height);
+  }
 
   #Main-content {
     margin-top: var(--top-banner-height); /* push content below banner */
